@@ -378,6 +378,30 @@ WemoClient.prototype.handleCallback = function(body) {
         self.emit('binaryState', data);
       }
     },
+    Fader: function(data) {
+      data = data.split(':')
+      if (data[1] > 0) {
+        self.emit('timerStart', data);
+      } else if (data[1] < 0) {
+        self.emit('timerCancel', data);
+      } else if (data[1] == 0) {
+        self.emit('timerFinish', data);
+      }
+    },
+    TimeSyncRequest: function(data) {
+      self.emit('timeSyncRequest', data);
+    },
+    TimeZoneNotification: function(data) {
+      self.emit('timeZoneNotification', data);
+    },
+    Brightness: function(data) {
+      if (typeof data !== 'number' && typeof data !== 'string') {
+        self.emit('brightnessChange', data['Brightness']);
+        self.emit('binaryState', data['BinaryState']);
+      } else {
+        self.emit('brightnessChange', data);
+      }
+    },
     StatusChange: function(data) {
       xml2js.parseString(data, { explicitArray: false }, function(err, xml) {
         if (!err) {
@@ -393,6 +417,9 @@ WemoClient.prototype.handleCallback = function(body) {
       var params = this._parseInsightParams(data);
       self.emit('insightParams', params.binaryState, params.instantPower, params.insightParams);
     }.bind(this),
+    nightMode: function(data) {
+      self.emit('nightMode', data);
+    },
     attributeList: function(data) {
       var xml = '<attributeList>' + entities.decodeXML(data) + '</attributeList>';
       xml2js.parseString(xml, { explicitArray: true }, function(err, result) {
