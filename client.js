@@ -213,6 +213,15 @@ WemoClient.prototype.getDeviceStatus = function(deviceId, cb) {
   }, parseResponse);
 };
 
+WemoClient.prototype.getManufactureData = function(cb) {
+  this.soapAction('urn:Belkin:service:manufacture:1', 'GetManufactureData', null, function(err, data) {
+    if (err) return cb(err);
+    var xml = entities.decodeXML(data.ManufactureData);
+    xml2js.parseString(xml, {explicitArray: false}, function(err, result) {
+      cb(result);
+    });
+  }.bind(this));
+};
 WemoClient.prototype.setLightColor = function(deviceId, red, green, blue, cb) {
   var color = WemoClient.rgb2xy(red, green, blue);
   this.setDeviceStatus(deviceId, 10300, color.join(':') + ':0', cb);
