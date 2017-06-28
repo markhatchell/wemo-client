@@ -370,7 +370,6 @@ WemoClient.prototype.handleCallback = function(body) {
   var self = this;
   var handler = {
     BinaryState: function(data) {
-      self.emit('binaryState', data.substring(0, 1));
       if (typeof data !== 'number' && typeof data !== 'string') {
         self.emit('brightnessChange', data['Brightness']);
         self.emit('binaryState', data['BinaryState']);
