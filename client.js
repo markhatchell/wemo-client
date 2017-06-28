@@ -222,6 +222,14 @@ WemoClient.prototype.getManufactureData = function(cb) {
     });
   }.bind(this));
 };
+
+WemoClient.prototype.setManyBinaryStates = function(obj, cb) {
+  this.soapAction('urn:Belkin:service:basicevent:1', 'SetBinaryState', obj, function(err, data) {
+    if (err) return cb(err);
+    cb(null, data);
+  });
+};
+
 WemoClient.prototype.setLightColor = function(deviceId, red, green, blue, cb) {
   var color = WemoClient.rgb2xy(red, green, blue);
   this.setDeviceStatus(deviceId, 10300, color.join(':') + ':0', cb);
