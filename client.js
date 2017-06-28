@@ -440,11 +440,30 @@ WemoClient.prototype.handleCallback = function(body) {
 
   xml2js.parseString(body, { explicitArray: false }, function(err, xml) {
     if (err) throw err;
-    for (var prop in xml['e:propertyset']['e:property']) {
-      if (handler.hasOwnProperty(prop)) {
-        handler[prop](xml['e:propertyset']['e:property'][prop]);
+    var params;
+    var paramFields = [];
+    if (Array.isArray(xml['e:propertyset']['e:property'])) {
+      params = {};
+      for (var i in xml['e:propertyset']['e:property']) {
+        for (var prop in xml['e:propertyset']['e:property'][i]) {
+          paramFields.push(prop);
+          params[prop] = xml['e:propertyset']['e:property'][i][prop];
+        }
+      }
+    } else {
+      for (var prop in xml['e:propertyset']['e:property']) {
+        if (handler.hasOwnProperty(prop)) {
+          handler[prop](xml['e:propertyset']['e:property'][prop]);
+        } else {
+          debug('Unhandled Event: %s', prop);
+        }
+      }
+    }
+    if (params) {
+      if (handler.hasOwnProperty(paramFields[0])) {
+        handler[paramFields[0]](params);
       } else {
-        debug('Unhandled Event: %s', prop);
+        debug('Unhandled Event: %s', paramFields[0]);
       }
     }
   });
