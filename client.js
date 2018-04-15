@@ -248,6 +248,13 @@ WemoClient.prototype.getBinaryState = function(cb) {
   });
 };
 
+WemoClient.prototype.getBrightnessState = function(cb) {
+  this.soapAction('urn:Belkin:service:basicevent:1', 'GetBinaryState', null, function(err, data) {
+    if (err) return cb(err);
+    cb(null, data.brightness);
+  });
+};
+
 WemoClient.prototype.setAttributes = function(attributes, cb) {
   var builder = new xml2js.Builder({ rootName: 'attribute', headless: true, renderOpts: { pretty: false } });
 
