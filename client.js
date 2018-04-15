@@ -217,7 +217,8 @@ WemoClient.prototype.getManufactureData = function(cb) {
   this.soapAction('urn:Belkin:service:manufacture:1', 'GetManufactureData', null, function(err, data) {
     if (err) return cb(err);
     var xml = entities.decodeXML(data.ManufactureData);
-    xml2js.parseString(xml, {explicitArray: false}, function(err, result) {
+    xml2js.parseString(xml, { explicitArray: false }, function(err, result) {
+      if (err) return cb(err);
       cb(result);
     });
   }.bind(this));
@@ -385,7 +386,7 @@ WemoClient.prototype.handleCallback = function(body) {
       }
     },
     Fader: function(data) {
-      data = data.split(':')
+      data = data.split(':');
       if (data[1] > 0) {
         self.emit('timerStart', data);
       } else if (data[1] < 0) {
@@ -458,11 +459,11 @@ WemoClient.prototype.handleCallback = function(body) {
         }
       }
     } else {
-      for (var prop in xml['e:propertyset']['e:property']) {
-        if (handler.hasOwnProperty(prop)) {
-          handler[prop](xml['e:propertyset']['e:property'][prop]);
+      for (var prop2 in xml['e:propertyset']['e:property']) {
+        if (handler.hasOwnProperty(prop2)) {
+          handler[prop2](xml['e:propertyset']['e:property'][prop2]);
         } else {
-          debug('Unhandled Event: %s', prop);
+          debug('Unhandled Event: %s', prop2);
         }
       }
     }
